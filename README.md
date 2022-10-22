@@ -55,6 +55,11 @@ The program includes a simple converter of basic graphic files to text files.
 The program includes simplified translations into several language versions.
 
 
+<img src="https://github.com/jacek-mulawka/Animacja--BabyMetal--Kaelan-Mikla--z-Eris-Kallisti-Dyskordia/blob/main/Gallery/Animacja%20%20BabyMetal%20%20K%C3%A6lan%20Mikla%20%2001.jpg">
+
+<img src="https://github.com/jacek-mulawka/Animacja--BabyMetal--Kaelan-Mikla--z-Eris-Kallisti-Dyskordia/blob/main/Gallery/Animacja%20%20BabyMetal%20%20K%C3%A6lan%20Mikla%20%2002.jpg">
+
+
 BabyMetal 1 - logo
 <img src="https://github.com/jacek-mulawka/Animacja--BabyMetal--Kaelan-Mikla--z-Eris-Kallisti-Dyskordia/blob/main/Gallery/BabyMetal%201%20-%20logo.jpg">
 
