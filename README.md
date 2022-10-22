@@ -55,6 +55,40 @@ The program includes a simple converter of basic graphic files to text files.
 The program includes simplified translations into several language versions.
 
 
+BabyMetal 1 - logo
+<img src="https://github.com/jacek-mulawka/Animacja--BabyMetal--Kaelan-Mikla--z-Eris-Kallisti-Dyskordia/blob/main/Gallery/BabyMetal%201%20-%20logo.jpg">
+
+BabyMetal 2 - postacie
+<img src="https://github.com/jacek-mulawka/Animacja--BabyMetal--Kaelan-Mikla--z-Eris-Kallisti-Dyskordia/blob/main/Gallery/BabyMetal%202%20-%20postacie.jpg">
+
+BabyMetal 3 - flagi
+<img src="https://github.com/jacek-mulawka/Animacja--BabyMetal--Kaelan-Mikla--z-Eris-Kallisti-Dyskordia/blob/main/Gallery/BabyMetal%203%20-%20flagi.jpg">
+
+BabyMetal 4 - flaga
+<img src="https://github.com/jacek-mulawka/Animacja--BabyMetal--Kaelan-Mikla--z-Eris-Kallisti-Dyskordia/blob/main/Gallery/BabyMetal%204%20-%20flaga.jpg">
+
+Kælan Mikla 1 - logo 1
+<img src="https://github.com/jacek-mulawka/Animacja--BabyMetal--Kaelan-Mikla--z-Eris-Kallisti-Dyskordia/blob/main/Gallery/K%C3%A6lan%20Mikla%201%20-%20logo%201.jpg">
+
+Kælan Mikla 1 - logo 2
+<img src="https://github.com/jacek-mulawka/Animacja--BabyMetal--Kaelan-Mikla--z-Eris-Kallisti-Dyskordia/blob/main/Gallery/K%C3%A6lan%20Mikla%201%20-%20logo%202.jpg">
+
+Kælan Mikla 2 - flaga
+<img src="https://github.com/jacek-mulawka/Animacja--BabyMetal--Kaelan-Mikla--z-Eris-Kallisti-Dyskordia/blob/main/Gallery/K%C3%A6lan%20Mikla%202%20-%20flaga.jpg">
+
+Kælan Mikla 3 - postacie 1
+<img src="https://github.com/jacek-mulawka/Animacja--BabyMetal--Kaelan-Mikla--z-Eris-Kallisti-Dyskordia/blob/main/Gallery/K%C3%A6lan%20Mikla%203%20-%20postacie%201.jpg">
+
+Kælan Mikla 3 - postacie 2
+<img src="https://github.com/jacek-mulawka/Animacja--BabyMetal--Kaelan-Mikla--z-Eris-Kallisti-Dyskordia/blob/main/Gallery/K%C3%A6lan%20Mikla%203%20-%20postacie%202.jpg">
+
+Kælan Mikla 4 - postacie 2 a
+<img src="https://github.com/jacek-mulawka/Animacja--BabyMetal--Kaelan-Mikla--z-Eris-Kallisti-Dyskordia/blob/main/Gallery/K%C3%A6lan%20Mikla%204%20-%20postacie%202%20a.jpg">
+
+Kælan Mikla 4 - postacie 2 b
+<img src="https://github.com/jacek-mulawka/Animacja--BabyMetal--Kaelan-Mikla--z-Eris-Kallisti-Dyskordia/blob/main/Gallery/K%C3%A6lan%20Mikla%204%20-%20postacie%202%20b.jpg">
+
+
 Powered by
 
 [GLScene](http://glscene.sourceforge.net),
