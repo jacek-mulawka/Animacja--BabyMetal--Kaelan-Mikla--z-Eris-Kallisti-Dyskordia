@@ -1,0 +1,86 @@
+[ANIMATION]
+animation  waiting until the beginning millisecond
+animation  waiting for the start of the next step millisecond
+animation  radius
+animation  kind  recommended
+animation  transparency change speed
+animation  turns off the snow effect after the animation is finished millisecond
+randomization  element  quantity at the same time
+randomization  element  next milliseconds
+randomization  next  flash milliseconds
+background  color  r
+background  color  g
+background  color  b
+wind  maximum force
+wind  next change  second
+
+[ELEMENT]
+element  color  r
+element  color  g
+element  color  b
+element  scale
+
+[ELEMENT EFFECT]
+element  effect  fire burst
+element  effect  fire crown
+element  effect  fire density
+element  effect  fire evaporation
+element  effect  fire radius
+element  effect  color  inner  r
+element  effect  color  inner  g
+element  effect  color  inner  b
+element  effect  color  outer  r
+element  effect  color  outer  g
+element  effect  color  outer  b
+element  effect  particle interval
+element  effect  particle life
+element  effect  particle size
+element  effect  scale
+
+[WAVING]
+waving  amplitude
+waving  column next  wait  millisecond
+waving  speed
+waving  enabled
+
+[SNOW EFFECT]
+snow  effect  fire burst
+snow  effect  fire crown
+snow  effect  fire density
+snow  effect  fire evaporation
+snow  effect  fire radius
+snow  effect  color  inner  r
+snow  effect  color  inner  g
+snow  effect  color  inner  b
+snow  effect  color  outer  r
+snow  effect  color  outer  g
+snow  effect  color  outer  b
+snow  effect  margin
+snow  effect  particle interval
+snow  effect  particle life
+snow  effect  particle size
+snow  effect  position y
+snow  effect  rarity
+snow  effect  scale
+snow  effect  visible at run time
+
+[SNOW FLASH]
+snow  flash  fire burst
+snow  flash  fire crown
+snow  flash  fire density
+snow  flash  fire evaporation
+snow  flash  fire radius
+snow  flash  color  inner  r
+snow  flash  color  inner  g
+snow  flash  color  inner  b
+snow  flash  color  outer  r
+snow  flash  color  outer  g
+snow  flash  color  outer  b
+snow  flash  life boost factor
+snow  flash  max initial speed
+snow  flash  min initial speed
+snow  flash  nb particles
+snow  flash  particle interval
+snow  flash  particle life
+snow  flash  particle size
+snow  flash  scale

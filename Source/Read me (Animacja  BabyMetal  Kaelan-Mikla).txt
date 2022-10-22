@@ -1,0 +1,10 @@
+Animacja  BabyMetal  Kaelan-Mikla  z Eris Kallisti Dyskordia
+wersja 2022.10.18.
+
+MIT License
+
+Copyright (c) 2022 Jacek Mulawka
+
+j.mulawka@interia.pl
+
+https://github.com/jacek-mulawka
