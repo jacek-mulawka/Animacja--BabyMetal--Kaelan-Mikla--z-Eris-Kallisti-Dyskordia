@@ -1,4 +1,4 @@
-# Animacja--BabyMetal--Kaelan-Mikla--z-Eris-Kallisti-Dyskordia
+# Animacja--BabyMetal--Kælan-Mikla--z-Eris-Kallisti-Dyskordia
 
 Animacja zainspirowana
 
@@ -27,6 +27,7 @@ Program zawiera prosty konwerter podstawowych plików graficznych na pliki tekst
 Program zawiera uproszczone tłumaczenia na kilka wersji językowych.
 
 
+## English
 
 Animation inspired by
 
