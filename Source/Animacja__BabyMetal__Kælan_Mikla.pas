@@ -345,7 +345,7 @@ type
     animacja__krok__aktualny_g,
     animacja__krok__aktualny_kopia_g,
     animacja__krok__ostatni_g,
-    losowanie__elementu__kolejne__zakres__czas_milisekundy_i, // Zakres wartości czasu co jaki mogą odbywać się losowania (jest to wartość wzorcowa  z niej losuje się wartość czasu oczekiwania).
+    losowanie__elementu__kolejne__zakres__czas_milisekundy_i, // Zakres wartości czasu co jaki mogą odbywać się losowania (jest to wartość wzorcowa - z niej losuje się wartość czasu oczekiwania).
     losowanie__elementu__kolejne__losowy__czas_milisekundy_i, // Czas do kolejnego losowania (wartość modyfikowana losowo).
     losowanie__rozbłysku__kolejne__zakres__czas_milisekundy_i, // Zakres wartości czasu co jaki mogą odbywać się losowania (jest to wartość wzorcowa - z niej losuje się wartość czasu oczekiwania). Wartość ujemna oznacza, że efekt rozbłysku nie zostanie włączony.
     losowanie__rozbłysku__kolejne__losowy__czas_milisekundy_i, // Czas do kolejnego losowania (wartość modyfikowana losowo).
