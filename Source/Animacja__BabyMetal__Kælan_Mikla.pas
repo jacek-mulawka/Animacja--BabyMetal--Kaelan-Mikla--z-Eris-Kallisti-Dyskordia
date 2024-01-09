@@ -2666,7 +2666,7 @@ begin
         ) then
     begin
 
-      plik_ini := TIniFile.Create( zts );
+      plik_ini := System.IniFiles.TIniFile.Create( zts );
 
 
       {$region 'Obsługa pliku ini.'}
