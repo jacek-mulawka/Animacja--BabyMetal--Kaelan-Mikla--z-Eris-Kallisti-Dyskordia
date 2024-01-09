@@ -44,6 +44,7 @@
     Height = 300
     Camera = Gra_GLCamera
     FieldOfView = 143.130096435546900000
+    PenAsTouch = False
     OnClick = Gra_GLSceneViewerClick
     OnMouseMove = Gra_GLSceneViewerMouseMove
     OnKeyDown = Gra_GLSceneViewerKeyDown
@@ -498,18 +499,18 @@
         Left = 0
         Top = 0
         Width = 192
-        Height = 299
+        Height = 312
         Align = alTop
         Caption = 
           'Animacja  BabyMetal  K'#230'lan Mikla  z  Eris  Kallisti  Dyskordia'#13#10 +
-          'wersja 2022.10.18.'#13#10#13#10'MIT License'#13#10#13#10'Copyright (c) 2022 Jacek Mu' +
-          'lawka'#13#10#13#10'j.mulawka@interia.pl'#13#10#13#10'https://github.com/jacek-mulawk' +
-          'a'#13#10#13#10#13#10#13#10'Program jest darmowy, udost'#281'pniony w postaci takiej jak' +
-          'iej jest wraz ze wszystkimi b'#322#281'dami. U'#380'ytkownik zyskuje dost'#281'p d' +
-          'o programu, u'#380'ywa programu na w'#322'asne ryzyko i ponosi wy'#322#261'czn'#261' od' +
-          'powiedzialno'#347#263' za wszelkie szkody (w'#322'asne i niew'#322'asne) materialn' +
-          'e i niematerialne oraz utrat'#281' danych w zwi'#261'zku z u'#380'ywaniem progr' +
-          'amu.'
+          'wydanie 2.0.0.0'#13#10'wersja 2024.01.08.'#13#10#13#10'MIT License'#13#10#13#10'Copyright ' +
+          '(c) 2022 Jacek Mulawka'#13#10#13#10'j.mulawka@interia.pl'#13#10#13#10'https://github' +
+          '.com/jacek-mulawka'#13#10#13#10#13#10#13#10'Program jest darmowy, udost'#281'pniony w p' +
+          'ostaci takiej jakiej jest wraz ze wszystkimi b'#322#281'dami. U'#380'ytkownik' +
+          ' zyskuje dost'#281'p do programu, u'#380'ywa programu na w'#322'asne ryzyko i p' +
+          'onosi wy'#322#261'czn'#261' odpowiedzialno'#347#263' za wszelkie szkody (w'#322'asne i nie' +
+          'w'#322'asne) materialne i niematerialne oraz utrat'#281' danych w zwi'#261'zku ' +
+          'z u'#380'ywaniem programu.'
         WordWrap = True
         OnMouseMove = Animacja__BabyMetal__Kælan_Mikla_MouseMove
         ExplicitWidth = 191
@@ -4809,7 +4810,7 @@
       object Źródła_Etykieta_Label: TLabel
         AlignWithMargins = True
         Left = 3
-        Top = 329
+        Top = 342
         Width = 186
         Height = 26
         Hint = 'Sources of graphic elements used in animations.'
@@ -4820,12 +4821,13 @@
         ParentShowHint = False
         ShowHint = True
         WordWrap = True
+        ExplicitTop = 329
         ExplicitWidth = 185
       end
       object BabyMetal_LinkLabel: TLinkLabel
         AlignWithMargins = True
         Left = 10
-        Top = 375
+        Top = 388
         Width = 179
         Height = 17
         Margins.Left = 10
@@ -4834,12 +4836,13 @@
         Caption = '<a>BabyMetal</a>'
         TabOrder = 0
         OnLinkClick = LinkLabelLinkClick
+        ExplicitTop = 375
         ExplicitWidth = 54
       end
       object Kælan_Mikla_LinkLabel: TLinkLabel
         AlignWithMargins = True
         Left = 10
-        Top = 405
+        Top = 418
         Width = 179
         Height = 17
         Margins.Left = 10
@@ -4848,6 +4851,7 @@
         Caption = '<a>K'#230'lan Mikla</a>'
         TabOrder = 1
         OnLinkClick = LinkLabelLinkClick
+        ExplicitTop = 405
         ExplicitWidth = 60
       end
     end

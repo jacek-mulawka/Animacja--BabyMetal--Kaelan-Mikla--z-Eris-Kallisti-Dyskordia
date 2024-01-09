@@ -11,6 +11,9 @@
   //
 
 
+  // Wydanie 2.0.0.0 - aktualizacja GLScene z 1.6.0.7082 na 2.2 2023.
+
+
   // Kierunki współrzędnych układu głównego.
   //
   //     góra y
@@ -85,13 +88,13 @@
 interface
 
 uses
+  GLS.FireFX,
+
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ComCtrls, Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.Buttons,
-  GLWin32Viewer, GLObjects, GLScene, GLCoordinates, GLCrossPlatform, GLBaseClasses, GLNavigator, GLCadencer,
-  GLFireFX, GLSkydome, GLAsyncTimer, GLHUDObjects, GLBitmapFont, GLWindowsFont,
-  GLKeyboard, GLColor, GLMaterial, GLVectorGeometry,
-  System.Math, System.DateUtils, System.StrUtils, Vcl.Imaging.jpeg, Vcl.Imaging.pngimage, Vcl.Imaging.GIFImg,
-  System.IOUtils, System.TypInfo, System.IniFiles, Winapi.ShellAPI;
+
+  GLS.SceneViewer, GLS.Objects, GLS.Scene, GLS.Coordinates, GLS.BaseClasses, GLS.Navigator,
+  GLS.Cadencer, GLS.SkyDome, GLS.AsyncTimer, GLS.HUDObjects, GLS.BitmapFont, GLS.WindowsFont;
 
 type
   TAnimacja_Element_Etap = ( aee_Brak, aee_Animacja_Zakończona, aee_Element_Animowany );
@@ -214,7 +217,7 @@ type
       animacja__rodzaj__se : TAnimacja_Rodzaj;
       element_gl_cube : TGLCube;
       efekt_gl_dummy_cube : TGLDummyCube;
-      efekt_gl_fire_fx_manager : TGLFireFXManager;
+      efekt_gl_fire_fx_manager : GLS.FireFX.TGLFireFXManager;
   public
     { Public declarations }
     constructor Create( AOwner : TComponent; AParent : TGLBaseSceneObject; gl_cadencer_f : TGLCadencer );
@@ -228,7 +231,7 @@ type
   TŚnieg_Efekt = class( TGLDummyCube )
     private
       animacja__rodzaj__śe : TAnimacja_Rodzaj;
-      efekt_gl_fire_fx_manager : TGLFireFXManager;
+      efekt_gl_fire_fx_manager : GLS.FireFX.TGLFireFXManager;
   public
     { Public declarations }
     constructor Create( AOwner : TComponent; AParent : TGLBaseSceneObject; gl_cadencer_f : TGLCadencer );
@@ -463,6 +466,23 @@ var
 
 implementation
 
+uses
+  System.DateUtils,
+  System.IniFiles,
+  System.IOUtils,
+  System.Math,
+  System.StrUtils,
+  System.TypInfo,
+  Vcl.Imaging.GIFImg,
+  Vcl.Imaging.jpeg,
+  Vcl.Imaging.pngimage,
+  Winapi.ShellAPI,
+
+  GLS.Color,
+  GLS.Keyboard,
+  GLS.Material,
+  GLS.VectorGeometry;
+
 {$R *.dfm}
 
 //Konstruktor klasy TSchemat_Element.
@@ -485,9 +505,9 @@ begin
 
   Self.element_gl_cube := TGLCube.Create( Self );
   Self.element_gl_cube.Parent := Self;
-  Self.element_gl_cube.Material.FrontProperties.Ambient.Color := GLColor.clrTransparent;
-  Self.element_gl_cube.Material.FrontProperties.Emission.Color := GLColor.clrTransparent;
-  Self.element_gl_cube.Material.BlendingMode := GLMaterial.bmTransparency;
+  Self.element_gl_cube.Material.FrontProperties.Ambient.Color := GLS.Color.clrTransparent;
+  Self.element_gl_cube.Material.FrontProperties.Emission.Color := GLS.Color.clrTransparent;
+  Self.element_gl_cube.Material.BlendingMode := GLS.Material.bmTransparency;
 
   Self.efekt_gl_dummy_cube := TGLDummyCube.Create( Self );
   //Self.efekt_gl_dummy_cube.Parent := Self; // Nie widać efektów na tle elementów.
@@ -495,7 +515,7 @@ begin
   Self.efekt_gl_dummy_cube.Scale.Scale( 0.5 );
   //Self.efekt_gl_dummy_cube.VisibleAtRunTime := true; //???
 
-  Self.efekt_gl_fire_fx_manager := TGLFireFXManager.Create( Self );
+  Self.efekt_gl_fire_fx_manager := GLS.FireFX.TGLFireFXManager.Create( Self );
   Self.efekt_gl_fire_fx_manager.Cadencer := gl_cadencer_f;
   Self.efekt_gl_fire_fx_manager.Disabled := true;
   Self.efekt_gl_fire_fx_manager.FireBurst := 0.1;
@@ -509,7 +529,7 @@ begin
   Self.efekt_gl_fire_fx_manager.ParticleLife := 40;
   Self.efekt_gl_fire_fx_manager.ParticleSize := 0.4;
   Self.efekt_gl_fire_fx_manager.InnerColor.Color := Self.element_gl_cube.Material.FrontProperties.Diffuse.Color;
-  Self.efekt_gl_fire_fx_manager.OuterColor.Color := GLColor.clrWhite;
+  Self.efekt_gl_fire_fx_manager.OuterColor.Color := GLS.Color.clrWhite;
 
   // Dodaje efekt.
   GetOrCreateFireFX( Self.efekt_gl_dummy_cube ).Manager := Self.efekt_gl_fire_fx_manager;
@@ -596,7 +616,7 @@ begin
   Self.element_gl_cube.Scale.Y := schemat_ustawienia_r_f.element__skala;
   Self.element_gl_cube.Scale.Z := schemat_ustawienia_r_f.element__skala;
 
-  Self.element_gl_cube.Material.FrontProperties.Diffuse.Color := GLVectorGeometry.VectorMake( schemat_ustawienia_r_f.element__kolor__r, schemat_ustawienia_r_f.element__kolor__g, schemat_ustawienia_r_f.element__kolor__b, Self.element_gl_cube.Material.FrontProperties.Diffuse.Alpha );
+  Self.element_gl_cube.Material.FrontProperties.Diffuse.Color := GLS.VectorGeometry.VectorMake( schemat_ustawienia_r_f.element__kolor__r, schemat_ustawienia_r_f.element__kolor__g, schemat_ustawienia_r_f.element__kolor__b, Self.element_gl_cube.Material.FrontProperties.Diffuse.Alpha );
 
   if Self.animacja__rodzaj__se = ar_Kælan_Mikla then
     begin
@@ -613,8 +633,8 @@ begin
       Self.efekt_gl_fire_fx_manager.ParticleInterval := schemat_ustawienia_r_f.śnieg__rozbłysk__particle_interval;
       Self.efekt_gl_fire_fx_manager.ParticleLife := schemat_ustawienia_r_f.śnieg__rozbłysk__particle_life;
       Self.efekt_gl_fire_fx_manager.ParticleSize := schemat_ustawienia_r_f.śnieg__rozbłysk__particle_size;
-      Self.efekt_gl_fire_fx_manager.InnerColor.Color := GLVectorGeometry.VectorMake( schemat_ustawienia_r_f.śnieg__rozbłysk__kolor__inner__r, schemat_ustawienia_r_f.śnieg__rozbłysk__kolor__inner__g, schemat_ustawienia_r_f.śnieg__rozbłysk__kolor__inner__b, 1 );
-      Self.efekt_gl_fire_fx_manager.OuterColor.Color := GLVectorGeometry.VectorMake( schemat_ustawienia_r_f.śnieg__rozbłysk__kolor__outer__r, schemat_ustawienia_r_f.śnieg__rozbłysk__kolor__outer__g, schemat_ustawienia_r_f.śnieg__rozbłysk__kolor__outer__b, 1 );
+      Self.efekt_gl_fire_fx_manager.InnerColor.Color := GLS.VectorGeometry.VectorMake( schemat_ustawienia_r_f.śnieg__rozbłysk__kolor__inner__r, schemat_ustawienia_r_f.śnieg__rozbłysk__kolor__inner__g, schemat_ustawienia_r_f.śnieg__rozbłysk__kolor__inner__b, 1 );
+      Self.efekt_gl_fire_fx_manager.OuterColor.Color := GLS.VectorGeometry.VectorMake( schemat_ustawienia_r_f.śnieg__rozbłysk__kolor__outer__r, schemat_ustawienia_r_f.śnieg__rozbłysk__kolor__outer__g, schemat_ustawienia_r_f.śnieg__rozbłysk__kolor__outer__b, 1 );
 
     end
   else//if Self.animacja__rodzaj__se = ar_Kælan_Mikla then
@@ -634,8 +654,8 @@ begin
       Self.efekt_gl_fire_fx_manager.ParticleInterval := schemat_ustawienia_r_f.element__efekt__particle_interval;
       Self.efekt_gl_fire_fx_manager.ParticleLife := schemat_ustawienia_r_f.element__efekt__particle_life;
       Self.efekt_gl_fire_fx_manager.ParticleSize := schemat_ustawienia_r_f.element__efekt__particle_size;
-      Self.efekt_gl_fire_fx_manager.InnerColor.Color := GLVectorGeometry.VectorMake( schemat_ustawienia_r_f.element__efekt__kolor__inner__r, schemat_ustawienia_r_f.element__efekt__kolor__inner__g, schemat_ustawienia_r_f.element__efekt__kolor__inner__b, 1 );
-      Self.efekt_gl_fire_fx_manager.OuterColor.Color := GLVectorGeometry.VectorMake( schemat_ustawienia_r_f.element__efekt__kolor__outer__r, schemat_ustawienia_r_f.element__efekt__kolor__outer__g, schemat_ustawienia_r_f.element__efekt__kolor__outer__b, 1 );
+      Self.efekt_gl_fire_fx_manager.InnerColor.Color := GLS.VectorGeometry.VectorMake( schemat_ustawienia_r_f.element__efekt__kolor__inner__r, schemat_ustawienia_r_f.element__efekt__kolor__inner__g, schemat_ustawienia_r_f.element__efekt__kolor__inner__b, 1 );
+      Self.efekt_gl_fire_fx_manager.OuterColor.Color := GLS.VectorGeometry.VectorMake( schemat_ustawienia_r_f.element__efekt__kolor__outer__r, schemat_ustawienia_r_f.element__efekt__kolor__outer__g, schemat_ustawienia_r_f.element__efekt__kolor__outer__b, 1 );
 
     end;
   //---//if Self.animacja__rodzaj__se = ar_Kælan_Mikla then
@@ -673,7 +693,7 @@ begin
 
   Self.animacja__rodzaj__śe := ar_BabyMetal;
 
-  Self.efekt_gl_fire_fx_manager := TGLFireFXManager.Create( Self );
+  Self.efekt_gl_fire_fx_manager := GLS.FireFX.TGLFireFXManager.Create( Self );
   Self.efekt_gl_fire_fx_manager.Cadencer := gl_cadencer_f;
   Self.efekt_gl_fire_fx_manager.Disabled := true;
   Self.efekt_gl_fire_fx_manager.FireBurst := 0.5;
@@ -686,8 +706,8 @@ begin
   Self.efekt_gl_fire_fx_manager.ParticleInterval := 1;
   Self.efekt_gl_fire_fx_manager.ParticleLife := 50;
   Self.efekt_gl_fire_fx_manager.ParticleSize := 0.8;
-  Self.efekt_gl_fire_fx_manager.InnerColor.Color := GLVectorGeometry.VectorMake( 1, 1, 1, 1 );
-  Self.efekt_gl_fire_fx_manager.OuterColor.Color := GLVectorGeometry.VectorMake( 1, 1, 1, 1 );
+  Self.efekt_gl_fire_fx_manager.InnerColor.Color := GLS.VectorGeometry.VectorMake( 1, 1, 1, 1 );
+  Self.efekt_gl_fire_fx_manager.OuterColor.Color := GLS.VectorGeometry.VectorMake( 1, 1, 1, 1 );
 
   // Dodaje efekt.
   GetOrCreateFireFX( Self ).Manager := Self.efekt_gl_fire_fx_manager;
@@ -776,8 +796,8 @@ begin
   Self.efekt_gl_fire_fx_manager.ParticleInterval := schemat_ustawienia_r_f.śnieg__efekt__particle_interval;
   Self.efekt_gl_fire_fx_manager.ParticleLife := schemat_ustawienia_r_f.śnieg__efekt__particle_life;
   Self.efekt_gl_fire_fx_manager.ParticleSize := schemat_ustawienia_r_f.śnieg__efekt__particle_size;
-  Self.efekt_gl_fire_fx_manager.InnerColor.Color := GLVectorGeometry.VectorMake( schemat_ustawienia_r_f.śnieg__efekt__kolor__inner__r, schemat_ustawienia_r_f.śnieg__efekt__kolor__inner__g, schemat_ustawienia_r_f.śnieg__efekt__kolor__inner__b, 1 );
-  Self.efekt_gl_fire_fx_manager.OuterColor.Color := GLVectorGeometry.VectorMake( schemat_ustawienia_r_f.śnieg__efekt__kolor__outer__r, schemat_ustawienia_r_f.śnieg__efekt__kolor__outer__g, schemat_ustawienia_r_f.śnieg__efekt__kolor__outer__b, 1 );
+  Self.efekt_gl_fire_fx_manager.InnerColor.Color := GLS.VectorGeometry.VectorMake( schemat_ustawienia_r_f.śnieg__efekt__kolor__inner__r, schemat_ustawienia_r_f.śnieg__efekt__kolor__inner__g, schemat_ustawienia_r_f.śnieg__efekt__kolor__inner__b, 1 );
+  Self.efekt_gl_fire_fx_manager.OuterColor.Color := GLS.VectorGeometry.VectorMake( schemat_ustawienia_r_f.śnieg__efekt__kolor__outer__r, schemat_ustawienia_r_f.śnieg__efekt__kolor__outer__g, schemat_ustawienia_r_f.śnieg__efekt__kolor__outer__b, 1 );
 
 end;//---//Funkcja Parametry__Ustaw().
 
@@ -800,7 +820,7 @@ begin
   //     true - zmienna czas_poprzedni_f przechowuje wartość w milisekundach (wartość zmiennej dla 1 sekunda = 1 000).
   //
 
-  Result := Floor(  Czas_Między_W_Milisekundach( czas_poprzedni_f, zmienna_w_milisekundach_f ) * 0.001  );
+  Result := System.Math.Floor(  Czas_Między_W_Milisekundach( czas_poprzedni_f, zmienna_w_milisekundach_f ) * 0.001  );
 
 end;//---//Funkcja Czas_Między_W_Sekundach().
 
@@ -852,7 +872,7 @@ begin
   // Zwraca aktualny bezwzględny czas gry bez ułamków sekund w postaci 123 (1:59 = 1).
   //
 
-  Result := Floor( Czas_Teraz() );
+  Result := System.Math.Floor( Czas_Teraz() );
 
 end;//---//Funkcja Czas_Teraz_W_Sekundach().
 
@@ -906,30 +926,30 @@ const
   ruch_c_l : single = 5;
 begin
 
-  if IsKeyDown( 'W' ) then // uses GLKeyboard.
+  if GLS.Keyboard.IsKeyDown( 'W' ) then
     Gra_GLCamera.Move( ruch_c_l * gra_współczynnik_prędkości_g * delta_czasu_f );
 
-  if IsKeyDown( 'S' ) then
+  if GLS.Keyboard.IsKeyDown( 'S' ) then
     Gra_GLCamera.Move( -ruch_c_l * gra_współczynnik_prędkości_g * delta_czasu_f );
 
-  if IsKeyDown( 'A' ) then
+  if GLS.Keyboard.IsKeyDown( 'A' ) then
     Gra_GLCamera.Slide( -ruch_c_l * gra_współczynnik_prędkości_g * delta_czasu_f );
 
-  if IsKeyDown( 'D' ) then
+  if GLS.Keyboard.IsKeyDown( 'D' ) then
     Gra_GLCamera.Slide( ruch_c_l * gra_współczynnik_prędkości_g * delta_czasu_f );
 
 
-  if IsKeyDown( 'R' ) then // Góra.
+  if GLS.Keyboard.IsKeyDown( 'R' ) then // Góra.
     Gra_GLCamera.Lift( ruch_c_l * gra_współczynnik_prędkości_g * delta_czasu_f );
 
-  if IsKeyDown( 'F' ) then // Dół.
+  if GLS.Keyboard.IsKeyDown( 'F' ) then // Dół.
     Gra_GLCamera.Lift( -ruch_c_l * gra_współczynnik_prędkości_g * delta_czasu_f );
 
 
-  if IsKeyDown( 'Q' ) then // Obrót w lewo.
+  if GLS.Keyboard.IsKeyDown( 'Q' ) then // Obrót w lewo.
     Gra_GLCamera.Turn( -ruch_c_l * gra_współczynnik_prędkości_g * delta_czasu_f * 10 );
 
-  if IsKeyDown( 'E' ) then // Obrót w prawo.
+  if GLS.Keyboard.IsKeyDown( 'E' ) then // Obrót w prawo.
     Gra_GLCamera.Turn( ruch_c_l * gra_współczynnik_prędkości_g * delta_czasu_f * 10 );
 
 end;//---//Funkcja Kamera_Ruch().
@@ -1142,7 +1162,7 @@ end;//---//Funkcja Informacja_Ekranowa_Wyświetl().
 procedure TAnimacja__BabyMetal__Kaelan_Mikla__Form.Animacja_Etap_Informacja();
 begin
 
-  Animacja_Etap_Label.Caption := GetEnumName(  TypeInfo(TAnimacja_Etap), Ord( animacja__etap_g )  ); // uses  System.TypInfo. // Daje nazwy elementów.
+  Animacja_Etap_Label.Caption := System.TypInfo.GetEnumName(  System.TypeInfo(TAnimacja_Etap), Ord( animacja__etap_g )  ); // Daje nazwy elementów.
   Animacja_Etap_Label.Caption := StringReplace( Animacja_Etap_Label.Caption, 'ae_', '', [ rfReplaceAll ] );
   Animacja_Etap_Label.Caption := StringReplace( Animacja_Etap_Label.Caption, '_', ' ', [ rfReplaceAll ] );
 
@@ -1181,7 +1201,7 @@ begin
 
       //if i mod 10 = 0 then
       //  Application.ProcessMessages();
-      if MilliSecondsBetween( Now(), ztdt ) >= postęp_odświeżanie_milisekundy_c then
+      if System.DateUtils.MilliSecondsBetween( Now(), ztdt ) >= postęp_odświeżanie_milisekundy_c then
         begin
 
           ProgressBar1__Widoczność_Ustaw();
@@ -1191,7 +1211,7 @@ begin
           ztdt := Now();
 
         end;
-      //---//if MilliSecondsBetween( Now(), ztdt ) >= postęp_odświeżanie_milisekundy_c then
+      //---//if System.DateUtils.MilliSecondsBetween( Now(), ztdt ) >= postęp_odświeżanie_milisekundy_c then
 
     end;
   //---//for i := 0 to śnieg_efekt_list.Count - 1 do
@@ -1206,7 +1226,7 @@ begin
 
       //if i mod 100 = 0 then
       //  Application.ProcessMessages();
-      if MilliSecondsBetween( Now(), ztdt ) >= postęp_odświeżanie_milisekundy_c then
+      if System.DateUtils.MilliSecondsBetween( Now(), ztdt ) >= postęp_odświeżanie_milisekundy_c then
         begin
 
           ProgressBar1__Widoczność_Ustaw();
@@ -1216,7 +1236,7 @@ begin
           ztdt := Now();
 
         end;
-      //---//if MilliSecondsBetween( Now(), ztdt ) >= postęp_odświeżanie_milisekundy_c then
+      //---//if System.DateUtils.MilliSecondsBetween( Now(), ztdt ) >= postęp_odświeżanie_milisekundy_c then
 
     end;
   //---//for i := 0 to schemat_elementy_list.Count - 1 do
@@ -1694,8 +1714,8 @@ begin
   y__max := y__max + skala_kopia * 2;
 
 
-  zt_affine_vector_1 := Gra_GLSceneViewer.Buffer.WorldToScreen(  GLVectorGeometry.AffineVectorMake( x__min, y__min, 0 )  );
-  zt_affine_vector_2 := Gra_GLSceneViewer.Buffer.WorldToScreen(  GLVectorGeometry.AffineVectorMake( x__max, y__max, 0 )  );
+  zt_affine_vector_1 := Gra_GLSceneViewer.Buffer.WorldToScreen(  GLS.VectorGeometry.AffineVectorMake( x__min, y__min, 0 )  );
+  zt_affine_vector_2 := Gra_GLSceneViewer.Buffer.WorldToScreen(  GLS.VectorGeometry.AffineVectorMake( x__max, y__max, 0 )  );
 
   while ( zt_affine_vector_1.X < 0 )
      or ( zt_affine_vector_1.Y < 0 )
@@ -1709,8 +1729,8 @@ begin
 
       Gra_GLCamera.Position.Z := Gra_GLCamera.Position.Z + 1 * skala_kopia;
 
-      zt_affine_vector_1 := Gra_GLSceneViewer.Buffer.WorldToScreen(  GLVectorGeometry.AffineVectorMake( x__min, y__min, 0 )  );
-      zt_affine_vector_2 := Gra_GLSceneViewer.Buffer.WorldToScreen(  GLVectorGeometry.AffineVectorMake( x__max, y__max, 0 )  );
+      zt_affine_vector_1 := Gra_GLSceneViewer.Buffer.WorldToScreen(  GLS.VectorGeometry.AffineVectorMake( x__min, y__min, 0 )  );
+      zt_affine_vector_2 := Gra_GLSceneViewer.Buffer.WorldToScreen(  GLS.VectorGeometry.AffineVectorMake( x__max, y__max, 0 )  );
 
     end;
   //---//while ( zt_affine_vector_1.X < 0 ) (...)
@@ -1756,9 +1776,9 @@ begin
         // Dodaje nazwy plików bez rozszerzenia.
 
         zts := search_rec.Name;
-        zts := ReverseString( zts ); //uses StrUtils.
+        zts := System.StrUtils.ReverseString( zts );
         Delete(  zts, 1, Pos( '.', zts )  );
-        zts := ReverseString( zts ); //uses StrUtils.
+        zts := System.StrUtils.ReverseString( zts );
 
         Schematy_ComboBox.Items.Add( zts );
 
@@ -2207,14 +2227,14 @@ begin
 
               if ProgressBar1.Parent = Opcje_TabSheet then
                 //if kolumny mod 100 = 0 then
-                if MilliSecondsBetween( Now(), ztdt ) >= postęp_odświeżanie_milisekundy_c then
+                if System.DateUtils.MilliSecondsBetween( Now(), ztdt ) >= postęp_odświeżanie_milisekundy_c then
                   begin
 
                     Application.ProcessMessages();
                     ztdt := Now();
 
                   end;
-                //---//if MilliSecondsBetween( Now(), ztdt ) >= postęp_odświeżanie_milisekundy_c then
+                //---//if System.DateUtils.MilliSecondsBetween( Now(), ztdt ) >= postęp_odświeżanie_milisekundy_c then
 
             end;
           //---//if ProgressBar1.Parent = Opcje_TabSheet then
@@ -2232,7 +2252,7 @@ begin
       ProgressBar1.StepIt();
 
       //Application.ProcessMessages();
-      if MilliSecondsBetween( Now(), ztdt ) >= postęp_odświeżanie_milisekundy_c then
+      if System.DateUtils.MilliSecondsBetween( Now(), ztdt ) >= postęp_odświeżanie_milisekundy_c then
         begin
 
           ProgressBar1__Widoczność_Ustaw();
@@ -2242,7 +2262,7 @@ begin
           ztdt := Now();
 
         end;
-      //---//if MilliSecondsBetween( Now(), ztdt ) >= postęp_odświeżanie_milisekundy_c then
+      //---//if System.DateUtils.MilliSecondsBetween( Now(), ztdt ) >= postęp_odświeżanie_milisekundy_c then
 
 
       if przerwij_wczytywanie_schematu_g then
@@ -2289,14 +2309,14 @@ begin
 
           //if śnieg_efekt_list.Count mod 10 = 0 then
           //  Application.ProcessMessages();
-          if MilliSecondsBetween( Now(), ztdt ) >= postęp_odświeżanie_milisekundy_c then
+          if System.DateUtils.MilliSecondsBetween( Now(), ztdt ) >= postęp_odświeżanie_milisekundy_c then
             begin
 
               Application.ProcessMessages();
               ztdt := Now();
 
             end;
-          //---//if MilliSecondsBetween( Now(), ztdt ) >= postęp_odświeżanie_milisekundy_c then
+          //---//if System.DateUtils.MilliSecondsBetween( Now(), ztdt ) >= postęp_odświeżanie_milisekundy_c then
 
 
           if przerwij_wczytywanie_schematu_g then
@@ -2453,7 +2473,7 @@ begin
 
       //if i mod 10 = 0 then
       //  Application.ProcessMessages();
-      if MilliSecondsBetween( Now(), ztdt ) >= postęp_odświeżanie_milisekundy_c then
+      if System.DateUtils.MilliSecondsBetween( Now(), ztdt ) >= postęp_odświeżanie_milisekundy_c then
         begin
 
           ProgressBar1__Widoczność_Ustaw();
@@ -2463,7 +2483,7 @@ begin
           ztdt := Now();
 
         end;
-      //---//if MilliSecondsBetween( Now(), ztdt ) >= postęp_odświeżanie_milisekundy_c then
+      //---//if System.DateUtils.MilliSecondsBetween( Now(), ztdt ) >= postęp_odświeżanie_milisekundy_c then
 
     end;
   //---//for i := śnieg_efekt_list.Count - 1 downto 0 do
@@ -2482,7 +2502,7 @@ begin
 
       //if i mod 100 = 0 then
       //  Application.ProcessMessages();
-      if MilliSecondsBetween( Now(), ztdt ) >= postęp_odświeżanie_milisekundy_c then
+      if System.DateUtils.MilliSecondsBetween( Now(), ztdt ) >= postęp_odświeżanie_milisekundy_c then
         begin
 
           ProgressBar1__Widoczność_Ustaw();
@@ -2492,7 +2512,7 @@ begin
           ztdt := Now();
 
         end;
-      //---//if MilliSecondsBetween( Now(), ztdt ) >= postęp_odświeżanie_milisekundy_c then
+      //---//if System.DateUtils.MilliSecondsBetween( Now(), ztdt ) >= postęp_odświeżanie_milisekundy_c then
 
     end;
   //---//for i := schemat_elementy_list.Count - 1 downto 0 do
@@ -2525,7 +2545,7 @@ procedure TAnimacja__BabyMetal__Kaelan_Mikla__Form.Ustawienia_Plik( const schema
 var
   i : integer;
   zts : string;
-  plik_ini : TIniFile; // uses IniFiles.
+  plik_ini : System.IniFiles.TIniFile;
 begin
 
   //
@@ -3590,7 +3610,7 @@ begin
     Animacja_Parametry_Początkowe_Ustaw()
   else//if animacja__etap_g = ae_Schemat_Wczytany then
   if    ( animacja__etap_g = ae_Schemat_Przygotowany )
-    //and (  MilliSecondsBetween( Now(), animacja__etap__czas_zmiany_ostatniej_g ) > schemat_ustawienia_r_g.animacja__oczekiwanie_do_rozpoczęcia_milisekundy  ) then
+    //and (  System.DateUtils.MilliSecondsBetween( Now(), animacja__etap__czas_zmiany_ostatniej_g ) > schemat_ustawienia_r_g.animacja__oczekiwanie_do_rozpoczęcia_milisekundy  ) then
     and (  Czas_Między_W_Milisekundach( animacja__etap__czas_milisekundy_i, true ) > schemat_ustawienia_r_g.animacja__oczekiwanie_do_rozpoczęcia_milisekundy  ) then
     begin
 
@@ -3625,7 +3645,7 @@ begin
   if    ( animacja__etap_g = ae_Animacja_Zakończona )
     and (
              ( schemat_ustawienia_r_g.animacja__wyłączenie_efektu_śniegu_po_zakończeniu_animacji_milisekundy < 0 )
-          //or (  MilliSecondsBetween( Now(), animacja__etap__czas_zmiany_ostatniej_g ) <= schemat_ustawienia_r_g.animacja__wyłączenie_efektu_śniegu_po_zakończeniu_animacji_milisekundy  )
+          //or (  System.DateUtils.MilliSecondsBetween( Now(), animacja__etap__czas_zmiany_ostatniej_g ) <= schemat_ustawienia_r_g.animacja__wyłączenie_efektu_śniegu_po_zakończeniu_animacji_milisekundy  )
           or (  Czas_Między_W_Milisekundach( animacja__etap__czas_milisekundy_i, true ) > schemat_ustawienia_r_g.animacja__wyłączenie_efektu_śniegu_po_zakończeniu_animacji_milisekundy  )
         ) then
     begin
@@ -3639,7 +3659,7 @@ begin
 
   if    ( animacja__etap_g = ae_Animacja_Zakończona )
     and ( schemat_ustawienia_r_g.animacja__wyłączenie_efektu_śniegu_po_zakończeniu_animacji_milisekundy >= 0 )
-    //and (  MilliSecondsBetween( Now(), animacja__etap__czas_zmiany_ostatniej_g ) > schemat_ustawienia_r_g.animacja__wyłączenie_efektu_śniegu_po_zakończeniu_animacji_milisekundy  )
+    //and (  System.DateUtils.MilliSecondsBetween( Now(), animacja__etap__czas_zmiany_ostatniej_g ) > schemat_ustawienia_r_g.animacja__wyłączenie_efektu_śniegu_po_zakończeniu_animacji_milisekundy  )
     and (  Czas_Między_W_Milisekundach( animacja__etap__czas_milisekundy_i, true ) > schemat_ustawienia_r_g.animacja__wyłączenie_efektu_śniegu_po_zakończeniu_animacji_milisekundy  )
     and ( śnieg_efekt_list.Count > 0 )
     and ( not TŚnieg_Efekt(śnieg_efekt_list[ 0 ]).efekt_gl_fire_fx_manager.Disabled ) then
@@ -3689,37 +3709,37 @@ end;//---//Gra_GLSceneViewerMouseMove().
 procedure TAnimacja__BabyMetal__Kaelan_Mikla__Form.Gra_GLSceneViewerKeyDown( Sender: TObject; var Key: Word; Shift: TShiftState );
 begin
 
-  if IsKeyDown( VK_ESCAPE ) then
+  if GLS.Keyboard.IsKeyDown( VK_ESCAPE ) then
     begin
 
       Close();
       Exit; // Potwierdzenie pytania Enterem wyzwala funkcjonalność dla klawisza Enter.
 
     end;
-  //---//if IsKeyDown( VK_ESCAPE ) then
+  //---//if GLS.Keyboard.IsKeyDown( VK_ESCAPE ) then
 
 
-  if IsKeyDown( VK_ADD ) then
+  if GLS.Keyboard.IsKeyDown( VK_ADD ) then
     Gra_Współczynnik_Prędkości_Zmień( 1 )
   else
-  if IsKeyDown( VK_SUBTRACT ) then
+  if GLS.Keyboard.IsKeyDown( VK_SUBTRACT ) then
     Gra_Współczynnik_Prędkości_Zmień( -1 )
   else
-  if IsKeyDown( VK_MULTIPLY ) then
+  if GLS.Keyboard.IsKeyDown( VK_MULTIPLY ) then
     Gra_Współczynnik_Prędkości_Zmień( 0 );
 
 
-  if IsKeyDown( VK_DELETE ) then
+  if GLS.Keyboard.IsKeyDown( VK_DELETE ) then
     begin
 
       Informacja_Ekranowa_Wyświetl( 'Przerwij' );
       Przerwij_Wczytywanie_Schematu_BitBtnClick( Sender );
 
     end;
-  //---//if IsKeyDown( VK_F2 ) then
+  //---//if GLS.Keyboard.IsKeyDown( VK_F2 ) then
 
 
-  if IsKeyDown( VK_END ) then
+  if GLS.Keyboard.IsKeyDown( VK_END ) then
     begin
 
       if Animacja_Rodzaj_RadioGroup.ItemIndex < Animacja_Rodzaj_RadioGroup.Items.Count - 1 then
@@ -3732,50 +3752,50 @@ begin
       //---//if Animacja_Rodzaj_RadioGroup.ItemIndex < Animacja_Rodzaj_RadioGroup.Items.Count - 1 then
 
     end;
-  //---//if IsKeyDown( VK_END ) then
+  //---//if GLS.Keyboard.IsKeyDown( VK_END ) then
 
 
-  if IsKeyDown( VK_F2 ) then
+  if GLS.Keyboard.IsKeyDown( VK_F2 ) then
     begin
 
       Informacja_Ekranowa_Wyświetl( 'Schemat' );
       Schemat__Odśwież();
 
     end;
-  //---//if IsKeyDown( VK_F2 ) then
+  //---//if GLS.Keyboard.IsKeyDown( VK_F2 ) then
 
 
-  if IsKeyDown( VK_F3 ) then
+  if GLS.Keyboard.IsKeyDown( VK_F3 ) then
     begin
 
       Informacja_Ekranowa_Wyświetl( 'Ustawienia' );
       Schemat__Ustawienia_Odśwież();
 
     end;
-  //---//if IsKeyDown( VK_F3 ) then
+  //---//if GLS.Keyboard.IsKeyDown( VK_F3 ) then
 
 
-  if IsKeyDown( VK_F5 ) then
+  if GLS.Keyboard.IsKeyDown( VK_F5 ) then
     begin
 
       Informacja_Ekranowa_Wyświetl( 'Start' );
       Start_BitBtnClick( Sender );
 
     end;
-  //---//if IsKeyDown( VK_F5 ) then
+  //---//if GLS.Keyboard.IsKeyDown( VK_F5 ) then
 
 
-  if IsKeyDown( VK_F8 ) then
+  if GLS.Keyboard.IsKeyDown( VK_F8 ) then
     begin
 
       Informacja_Ekranowa_Wyświetl( 'Stop' );
       Stop_BitBtnClick( Sender );
 
     end;
-  //---//if IsKeyDown( VK_F8 ) then
+  //---//if GLS.Keyboard.IsKeyDown( VK_F8 ) then
 
 
-  if IsKeyDown( VK_F11 ) then
+  if GLS.Keyboard.IsKeyDown( VK_F11 ) then
     begin
 
       if PageControl1.Width <> 200 then
@@ -3791,10 +3811,10 @@ begin
         Schemat__Kamera_Ustaw();
 
     end;
-  //---//if IsKeyDown( VK_F12 ) then
+  //---//if GLS.Keyboard.IsKeyDown( VK_F12 ) then
 
 
-  if IsKeyDown( VK_F12 ) then
+  if GLS.Keyboard.IsKeyDown( VK_F12 ) then
     begin
 
       if PageControl1.Width <> 200 then
@@ -3809,10 +3829,10 @@ begin
         Schemat__Kamera_Ustaw();
 
     end;
-  //---//if IsKeyDown( VK_F12 ) then
+  //---//if GLS.Keyboard.IsKeyDown( VK_F12 ) then
 
 
-  if IsKeyDown( VK_HOME ) then
+  if GLS.Keyboard.IsKeyDown( VK_HOME ) then
     begin
 
       if Animacja_Rodzaj_RadioGroup.ItemIndex > 0 then
@@ -3825,10 +3845,10 @@ begin
       //---//if Animacja_Rodzaj_RadioGroup.ItemIndex > 0 then
 
     end;
-  //---//if IsKeyDown( VK_HOME ) then
+  //---//if GLS.Keyboard.IsKeyDown( VK_HOME ) then
 
 
-  if IsKeyDown( VK_NEXT ) then
+  if GLS.Keyboard.IsKeyDown( VK_NEXT ) then
     begin
 
       if Schematy_ComboBox.ItemIndex < Schematy_ComboBox.Items.Count - 1 then
@@ -3842,10 +3862,10 @@ begin
       //---//if Schematy_ComboBox.ItemIndex < Schematy_ComboBox.Items.Count - 1 then
 
     end;
-  //---//if IsKeyDown( VK_NEXT ) then
+  //---//if GLS.Keyboard.IsKeyDown( VK_NEXT ) then
 
 
-  if IsKeyDown( VK_PRIOR ) then
+  if GLS.Keyboard.IsKeyDown( VK_PRIOR ) then
     begin
 
       if Schematy_ComboBox.ItemIndex > 0 then
@@ -3859,11 +3879,11 @@ begin
       //---//if Schematy_ComboBox.ItemIndex > 0 then
 
     end;
-  //---//if IsKeyDown( VK_PRIOR ) then
+  //---//if GLS.Keyboard.IsKeyDown( VK_PRIOR ) then
 
 
-  if    (  IsKeyDown( VK_RETURN )  ) // W GLCadencer1Progress() nie działa podczas pauzy.
-    and (  IsKeyDown( VK_MENU )  ) then // Alt.
+  if    (  GLS.Keyboard.IsKeyDown( VK_RETURN )  ) // W GLCadencer1Progress() nie działa podczas pauzy.
+    and (  GLS.Keyboard.IsKeyDown( VK_MENU )  ) then // Alt.
     begin
 
       // Pełny ekran.
@@ -3899,11 +3919,11 @@ begin
       //  Schemat__Kamera_Ustaw();
 
     end;
-  //---//if    (  IsKeyDown( VK_RETURN )  ) (...)
+  //---//if    (  GLS.Keyboard.IsKeyDown( VK_RETURN )  ) (...)
 
 
-  if    (  IsKeyDown( VK_RETURN )  )
-    and (  IsKeyDown( VK_SHIFT )  ) then
+  if    (  GLS.Keyboard.IsKeyDown( VK_RETURN )  )
+    and (  GLS.Keyboard.IsKeyDown( VK_SHIFT )  ) then
     begin
 
       // Pełny ekran.
@@ -3935,10 +3955,10 @@ begin
       //  Schemat__Kamera_Ustaw();
 
     end;
-  //---//if    (  IsKeyDown( VK_RETURN )  ) (...)
+  //---//if    (  GLS.Keyboard.IsKeyDown( VK_RETURN )  ) (...)
 
 
-  if IsKeyDown( VK_SPACE ) then
+  if GLS.Keyboard.IsKeyDown( VK_SPACE ) then
     begin
 
       GLUserInterface1.MouseLookActive := not GLUserInterface1.MouseLookActive;
@@ -3949,30 +3969,30 @@ begin
         Informacja_Ekranowa_Wyświetl( '- mysz' );
 
     end;
-  //---//if IsKeyDown( VK_SPACE ) then
+  //---//if GLS.Keyboard.IsKeyDown( VK_SPACE ) then
 
 
-  if IsKeyDown( 'I' ) then
+  if GLS.Keyboard.IsKeyDown( 'I' ) then
     begin
 
       Informacja_Ekranowa_CheckBox.Checked := not Informacja_Ekranowa_CheckBox.Checked;
       Informacja_Ekranowa_Wyświetl( 'Informacja ekranowa' );
 
     end;
-  //---//if IsKeyDown( 'I' ) then
+  //---//if GLS.Keyboard.IsKeyDown( 'I' ) then
 
 
-  if IsKeyDown( 'K' ) then
+  if GLS.Keyboard.IsKeyDown( 'K' ) then
     begin
 
       Schemat__Kamera_Ustaw();
 
     end;
-  //---//if IsKeyDown( 'K' ) then
+  //---//if GLS.Keyboard.IsKeyDown( 'K' ) then
 
 
-  if    (  IsKeyDown( 'K' )  )
-    and (  IsKeyDown( VK_CONTROL )  ) then
+  if    (  GLS.Keyboard.IsKeyDown( 'K' )  )
+    and (  GLS.Keyboard.IsKeyDown( VK_CONTROL )  ) then
     begin
 
       Kamera_Ustaw_CheckBox.Checked := not Kamera_Ustaw_CheckBox.Checked;
@@ -3983,11 +4003,11 @@ begin
         Informacja_Ekranowa_Wyświetl( '- ustaw kamerę' );
 
     end;
-  //---//if    (  IsKeyDown( 'K' )  ) (...)
+  //---//if    (  GLS.Keyboard.IsKeyDown( 'K' )  ) (...)
 
 
-  if    (  IsKeyDown( 'K' )  )
-    and (  IsKeyDown( VK_SHIFT )  ) then
+  if    (  GLS.Keyboard.IsKeyDown( 'K' )  )
+    and (  GLS.Keyboard.IsKeyDown( VK_SHIFT )  ) then
     begin
 
       Gra_GLCamera.ResetRotations();
@@ -3996,15 +4016,15 @@ begin
       Gra_GLCamera.Position.SetPoint( 0, 0, 10 );
 
     end;
-  //---//if    (  IsKeyDown( 'K' )  ) (...)
+  //---//if    (  GLS.Keyboard.IsKeyDown( 'K' )  ) (...)
 
 
-  if IsKeyDown( 'M' ) then
+  if GLS.Keyboard.IsKeyDown( 'M' ) then
     Falowanie_CheckBox.Checked := not Falowanie_CheckBox.Checked;
 
 
-  if   (  IsKeyDown( 'P' )  ) // Pauza podczas wyłączania przeskakuje widokiem kamery gdy obracanie myszą jest włączone.
-    or (  IsKeyDown( VK_PAUSE )  ) then
+  if   (  GLS.Keyboard.IsKeyDown( 'P' )  ) // Pauza podczas wyłączania przeskakuje widokiem kamery gdy obracanie myszą jest włączone.
+    or (  GLS.Keyboard.IsKeyDown( VK_PAUSE )  ) then
     begin
 
       Pauza();
@@ -4015,10 +4035,10 @@ begin
         Informacja_Ekranowa_Wyświetl( '- pauza' );
 
     end;
-  //---//if   (  IsKeyDown( 'P' )  ) (...)
+  //---//if   (  GLS.Keyboard.IsKeyDown( 'P' )  ) (...)
 
 
-  if IsKeyDown( '/' ) then
+  if GLS.Keyboard.IsKeyDown( '/' ) then
     Pomoc_BitBtnClick( Sender );
 
 
@@ -4104,13 +4124,13 @@ begin
 
   if    ( Screen.Cursor = crDefault )
     and ( punkt.X - 3 < Gra_GLSceneViewer.Width )
-    //and (  SecondsBetween( Now(), kursor_ruch_ostatni_data_czas_g ) > 3  ) then
+    //and (  System.DateUtils.SecondsBetween( Now(), kursor_ruch_ostatni_data_czas_g ) > 3  ) then
     and (
              (
                    ( Self.WindowState = wsMaximized )
-               and (  SecondsBetween( Now(), kursor_ruch_ostatni_data_czas_g ) > 1  )
+               and (  System.DateUtils.SecondsBetween( Now(), kursor_ruch_ostatni_data_czas_g ) > 1  )
              )
-          or (  SecondsBetween( Now(), kursor_ruch_ostatni_data_czas_g ) > 3  )
+          or (  System.DateUtils.SecondsBetween( Now(), kursor_ruch_ostatni_data_czas_g ) > 3  )
         ) then
     Screen.Cursor := crNone;
 
@@ -4410,9 +4430,9 @@ end;//---//Konwerter_Obrazów__Obraz_Adres__Szukaj_ButtonClick().
 procedure TAnimacja__BabyMetal__Kaelan_Mikla__Form.Konwerter_Obrazów__Obraz_Wczytaj_ButtonClick( Sender: TObject );
 var
   zts : string;
-  obrazek_jpg : TJPEGImage; // uses JPEG.
-  obrazek_png : TPngImage; // uses pngimage.
-  obrazek_gif : TGIFImage; // uses GIFImg.
+  obrazek_jpg : Vcl.Imaging.TJPEGImage;
+  obrazek_png : Vcl.Imaging.TPngImage;
+  obrazek_gif : Vcl.Imaging.TGIFImage;
   zt_image : TImage;
 begin
 
@@ -4641,7 +4661,7 @@ begin
        ) then
     begin
 
-      zts_1 := System.IOUtils.TPath.GetFileNameWithoutExtension( Konwerter_Obrazów__Obraz_Adres_Edit.Text ); // Nazwa pliku bez rozszerzenia -> 'nazwa'. // uses System.IOUtils.
+      zts_1 := System.IOUtils.TPath.GetFileNameWithoutExtension( Konwerter_Obrazów__Obraz_Adres_Edit.Text ); // Nazwa pliku bez rozszerzenia -> 'nazwa'.
 
       if zts_1 = plik_ini_wzorcowy_nazwa_c then
         zts_1 := zts_1 + ' 1';
@@ -4695,7 +4715,7 @@ begin
       Schemat__Lista_Wczytaj();
 
 
-      zts_2 := System.IOUtils.TPath.GetFileNameWithoutExtension( zts_1 ); // Nazwa pliku bez rozszerzenia -> 'nazwa'. // uses System.IOUtils.
+      zts_2 := System.IOUtils.TPath.GetFileNameWithoutExtension( zts_1 ); // Nazwa pliku bez rozszerzenia -> 'nazwa'.
 
 
       if Trim( zts_2 ) <> '' then
@@ -4759,7 +4779,7 @@ begin
         zts := '';
 
       if Trim( zts ) <> '' then
-        ShellExecuteW( 0, 'Open', PWideChar(zts), nil, nil, SW_SHOWDEFAULT );
+        Winapi.ShellAPI.ShellExecuteW( 0, 'Open', PWideChar(zts), nil, nil, SW_SHOWDEFAULT );
 
     end;
   //---//if Sender <> nil then

@@ -1,5 +1,6 @@
 Animacja  BabyMetal  Kaelan-Mikla  z Eris Kallisti Dyskordia
-wersja 2022.10.18.
+wydanie 2.0.0.0
+wersja 2024.01.08.
 
 MIT License
 
